@@ -58,7 +58,8 @@
                                     </p>
                                 </div>
                                 <div class="col-2">
-                                    <form action="{% url 'watchlist action' listing.pk %}">
+                                    <form action="{% url 'watchlist action' listing.pk %}" method="POST">
+                                        {% csrf_token %}
 
                                         <button type="submit">
                                             <img src="

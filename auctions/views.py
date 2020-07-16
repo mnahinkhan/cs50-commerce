@@ -119,15 +119,14 @@ def listing_page(request, listing_id, bid_form=None):
 
 @login_required
 def watchlist_action(request, listing_id):
-    assert request.user.is_authenticated
-    user = request.user
-    listing = Listings.objects.get(pk=listing_id)
-    print("listing")
-    print(user.watchlist_items.filter(pk=listing_id).exists())
-    if user.watchlist_items.filter(pk=listing_id).exists():
-        user.watchlist_items.remove(listing)
-    else:
-        user.watchlist_items.add(listing)
+    if request.method == "POST":
+        assert request.user.is_authenticated
+        user = request.user
+        listing = Listings.objects.get(pk=listing_id)
+        if user.watchlist_items.filter(pk=listing_id).exists():
+            user.watchlist_items.remove(listing)
+        else:
+            user.watchlist_items.add(listing)
     return HttpResponseRedirect(reverse("listing page", args=(listing_id,)))
 
 
