@@ -1,0 +1,134 @@
+body {
+  padding: 20px;
+}
+
+p.help {
+  font-size: 10px;
+  color: gray;
+  margin: 0 0 4px;
+}
+
+.form-group {
+  margin-top: 40px;
+}
+
+.listing-price {
+  p{
+    font-size: 16px;
+  }
+
+}
+
+.listing {
+  margin-bottom: 30px;
+}
+
+.all-listings {
+  padding-top: 20px;
+}
+
+.parent {
+  width: 100px;
+}
+
+.listing-title {
+  h4 {
+    text-transform: capitalize;
+  }
+}
+
+.listing-description {
+  p {
+    font-size: 14px;
+    color: gray;
+  }
+}
+
+
+.listing-owner {
+  font-size: 12px;
+  color: darkgray;
+}
+
+.listing-starting-price {
+  p {
+    font-size: 11px;
+    color: darkgrey;
+  }
+}
+
+p.listing-current-price-text {
+  font-size: 11px;
+  margin-bottom: 0;
+  color: gray;
+}
+
+.listing-page-quick-info {
+  p {
+    margin-bottom: 5px;
+    font-size: 12px;
+    color: darkgrey;
+  }
+  .listing-info-value {
+    color: gray;
+  }
+  h2 {
+    margin-bottom: 20px;
+  }
+}
+
+.listing-image {
+  img {
+  display: block;
+  width: 100%;
+  height: auto;
+  @media (min-width: 992px) {
+    width: 50%;
+    }
+  }
+  height: 400px;
+
+}
+
+.watchlist-section {
+
+  button {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  img {
+    height: 20px;
+    padding-left: 10px;
+    margin-bottom: 3px;
+  }
+  p {
+    text-align: right;
+    margin: 0;
+  }
+}
+
+.listing-page-bid-section {
+  margin-top: 40px;
+  button {
+    font-size: 10px;
+    background: gray;
+    border: rebeccapurple;
+
+  }
+}
+
+.errorlist {
+  color: red;
+  font-size: 12px;
+}
+
+.listing-page-bid-close-section {
+  margin-top: 30px;
+  button {
+    background: #406283;
+    border-radius: 10px;
+    color: white;
+  }
+}

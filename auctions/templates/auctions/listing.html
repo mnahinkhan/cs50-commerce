@@ -1,0 +1,106 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="listing-page-body container">
+        <div class="row">
+            <div class="col-6 listing-page-left-half">
+                <div class="listing-page-quick-info">
+                    <h2>{{ listing.title }}</h2>
+                    <p>Listing created by: <span class="listing-info-value">{{ listing.owner }}
+                        {%  if is_mine %}  (you!) {% endif %}</span></p>
+                    <p>Starting price: <span class="listing-info-value">${{ listing.starting_bid }}</span></p>
+                    <p>Number of bids made: <span class="listing-info-value">{{ listing.no_of_bids }}</span></p>
+                    <p>Current price: <span class="listing-info-value">${{ listing.current_price }}</span></p>
+                    <p>Description of listing: <span class="listing-info-value">{{ listing.description }}</span></p>
+                </div>
+                <div class="listing-page-bid-section">
+                    <h5>Bid on this item!</h5>
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'create bid' listing.pk %}">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="form-group row">
+                                    <label class="col-2 col-form-label"
+                                           for="{{ field.id_for_label }}">{{ field.label }}: </label>
+                                    <div class="col-10">
+                                        {% if field.help_text %}
+                                            <p class="help">{{ field.help_text }}</p>
+                                        {% endif %}
+                                        {{ field }}
+                                        {{ field.errors }}
+
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                            <button type="submit" class="btn btn-primary">Make bid</button>
+                        </form>
+                    {% else %}
+                        <p>Please sign in to bid on this item!</p>
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+            <div class="col-6 listing-page-right-half">
+                <div class="container">
+                    <div class="row watchlist-section no-gutters align-items-center">
+                        {% if user.is_authenticated %}
+
+
+                                <div class="col-10">
+                                    <p>{% if is_watchlist %}
+                                        Item is in watchlist
+                                        {% else %}
+                                        Item is not in watchlist
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="col-2">
+                                    <form action="{% url 'watchlist action' listing.pk %}">
+
+                                        <button type="submit">
+                                            <img src="
+                                                    {% if is_watchlist %}
+                                                        https://freeiconshop.com/wp-content/uploads/edd/star-outline-filled.png
+                                                    {% else %}
+                                                        https://image.flaticon.com/icons/svg/929/929566.svg
+                                                    {% endif %}"
+                                                 alt="
+                                                    {% if is_watchlist %}
+                                                        filled in star
+                                                    {% else %}
+                                                        unfilled star
+                                                    {% endif %}">
+                                        </button>
+                                    </form>
+                                </div>
+
+
+
+                        {% else %}
+                            <p> Log in to add item to your watchlist!</p>
+                        {% endif %}
+                    </div>
+                    <div class="row listing-image">
+                        <img class="mx-auto" src="{% if listing.image_url %} {{ listing.image_url }} {% else %}
+                    https://sjkelectrical.com.my/img/default-image.jpg {% endif %}" alt="listing  image">
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        {%  if is_mine %}
+            <form class="row listing-page-bid-close-section">
+                <button class="col-8 offset-2">Close this listing</button>
+            </form>
+        {% endif %}
+
+    </div>
+
+
+
+{% endblock %}
