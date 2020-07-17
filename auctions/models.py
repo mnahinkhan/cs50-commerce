@@ -36,6 +36,9 @@ class Listings(models.Model):
     def current_winning_bidder(self):
         return self.bids.get(value_offer=self.current_price()).user if self.no_of_bids() > 0 else None
 
+    def __str__(self):
+        return f'{self.title} by {self.owner}: {self.description}'
+
 
 class Bids(models.Model):
     listing = models.ForeignKey(Listings, on_delete=models.CASCADE, related_name="bids")
@@ -52,7 +55,14 @@ class Bids(models.Model):
                 raise ValidationError({'value_offer': _('Please make sure your bid value is higher than the current '
                                                         'price of the item!')})
 
+    def __str__(self):
+        return f"{self.user} offers to pay ${self.value_offer} for the listing: {self.listing}"
+
 
 class Comments(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     content = models.CharField(max_length=2048)
+    listing = models.ForeignKey(Listings, on_delete=models.CASCADE, related_name="comments")
+
+    def __str__(self):
+        return f"{self.author} says {self.content} for listing: {self.listing}"

@@ -7,13 +7,13 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .forms import ListingForm, BidForm
-from .models import User, Listings, Bids
+from .models import User, Listings, Bids, Comments
 
 
-def index(request, optional_alert=""):
+def index(request):
     return render(request, "auctions/index.html", {
-        'optional_top_message': optional_alert,
-        'listings': Listings.objects.filter(closed=False)
+        'listings': Listings.objects.filter(closed=False),
+        'title': 'Active Listings'
     })
 
 
@@ -95,7 +95,7 @@ def create_listing(request):
 def listing_page(request, listing_id, bid_form=None):
 
     listing = Listings.objects.get(pk=listing_id)
-
+    print(listing.closed)
     if request.user.is_authenticated:
         is_watch_list = request.user.watchlist_items.filter(pk=listing_id).exists()
 
@@ -144,3 +144,52 @@ def create_bid(request, listing_id):
 
     return HttpResponseRedirect(reverse("listing page", args=(listing_id,)))
 
+
+@login_required
+def close_listing(request, listing_id):
+    if request.method == "POST":
+        assert request.user.is_authenticated
+        listing = Listings.objects.get(pk=listing_id)
+        print(request.user)
+        print(listing.owner)
+        print(listing.owner == request.user)
+        if request.user == listing.owner:
+            listing.closed = True
+            listing.save()
+    return HttpResponseRedirect(reverse("listing page", args=(listing_id,)))
+
+
+@login_required
+def make_comment(request, listing_id):
+    if request.method == "POST":
+        assert request.user.is_authenticated
+        listing = Listings.objects.get(pk=listing_id)
+        comment_content = request.POST['comment']
+        comment = Comments(author=request.user, listing=listing, content=comment_content)
+        comment.save()
+    return HttpResponseRedirect(reverse("listing page", args=(listing_id,)))
+
+
+def filtered_index(request, category):
+    return render(request, "auctions/index.html", {
+        'listings': Listings.objects.filter(closed=False, category=category),
+        'title': f'Active listings under "{category}"'
+    })
+
+
+@login_required
+def watchlist_page(request):
+    assert request.user.is_authenticated
+    return render(request, "auctions/index.html", {
+        'listings': request.user.watchlist_items.all(),
+        'title': "Watchlist Items"
+    })
+
+
+def category_listing_page(request):
+
+    categories = list(set([listing.category for listing in Listings.objects.all() if listing.category]))
+    print(categories)
+    return render(request, "auctions/categories.html", {
+        'categories': categories
+    })

@@ -5,7 +5,8 @@
         <div class="row">
             <div class="col-6 listing-page-left-half">
                 <div class="listing-page-quick-info">
-                    <h2>{{ listing.title }}</h2>
+                    <h2>{{ listing.title }} {% if listing.closed %} &nbsp;
+                        <span class="listing-closed-info">(closed)</span> {% endif %}</h2>
                     <p>Listing created by: <span class="listing-info-value">{{ listing.owner }}
                         {%  if is_mine %}  (you!) {% endif %}</span></p>
                     <p>Starting price: <span class="listing-info-value">${{ listing.starting_bid }}</span></p>
@@ -16,27 +17,35 @@
                 <div class="listing-page-bid-section">
                     <h5>Bid on this item!</h5>
                     {% if user.is_authenticated %}
-                        <form method="post" action="{% url 'create bid' listing.pk %}">
-                            {% csrf_token %}
-                            {% for field in form %}
-                                <div class="form-group row">
-                                    <label class="col-2 col-form-label"
-                                           for="{{ field.id_for_label }}">{{ field.label }}: </label>
-                                    <div class="col-10">
-                                        {% if field.help_text %}
-                                            <p class="help">{{ field.help_text }}</p>
-                                        {% endif %}
-                                        {{ field }}
-                                        {{ field.errors }}
+                        {%  if listing.closed %}
+                            <p class="listing-closed-info">This listing has been closed!</p>
+                        {% endif %}
+                        <fieldset {% if listing.closed %} disabled class="disabled" {% endif %} >
+                            <form method="post" action="{% url 'create bid' listing.pk %}">
+                                {% csrf_token %}
+                                {% for field in form %}
+                                    <div class="form-group row">
+                                        <label class="col-3 col-form-label"
+                                               for="{{ field.id_for_label }}">{{ field.label }}: </label>
+                                        <div class="col-9">
+                                            {% if field.help_text %}
+                                                <p class="help">{{ field.help_text }}</p>
+                                            {% endif %}
+                                            {{ field }}
+                                            {{ field.errors }}
 
+                                        </div>
                                     </div>
-                                </div>
-                            {% endfor %}
-
-                            <button type="submit" class="btn btn-primary">Make bid</button>
-                        </form>
+                                {% endfor %}
+                                <button type="submit" class="btn btn-primary">Make bid</button>
+                            </form>
+                        </fieldset>
                     {% else %}
-                        <p>Please sign in to bid on this item!</p>
+                        {% if listing.closed %}
+                            <p>This item listing has been closed!</p>
+                        {% else %}
+                            <p>Please sign in to bid on this item!</p>
+                        {% endif %}
                     {% endif %}
 
 
@@ -84,9 +93,12 @@
                             <p> Log in to add item to your watchlist!</p>
                         {% endif %}
                     </div>
-                    <div class="row listing-image">
-                        <img class="mx-auto" src="{% if listing.image_url %} {{ listing.image_url }} {% else %}
+                    <div class="row listing-image-listing">
+                    <div class="col">
+                        <img class="float-right" src="{% if listing.image_url %} {{ listing.image_url }} {% else %}
                     https://sjkelectrical.com.my/img/default-image.jpg {% endif %}" alt="listing  image">
+                    </div>
+
                     </div>
                 </div>
 
@@ -95,10 +107,94 @@
         </div>
 
         {%  if is_mine %}
-            <form class="row listing-page-bid-close-section">
-                <button class="col-8 offset-2">Close this listing</button>
-            </form>
+
+                {% if not listing.closed %}
+                    <form class="row listing-page-bid-close-section" method="POST" action="{% url 'close listing' listing.pk %}">
+                        {%  csrf_token %}
+                        <button class="col-8 offset-2">Close this listing</button>
+                    </form>
+                {% endif %}
+
+
         {% endif %}
+
+        <div class="row listing-page-end-result">
+            <div class="col-12">
+
+
+                <h5>Current status of this listing</h5>
+                {% if listing.closed %}
+                    {% if is_mine %}
+                        {% if listing.current_winning_bidder %}
+                            <p> Your listing was sold to {{ listing.current_winning_bidder }} </p>
+                        {% else %}
+                            <p> Your listing was not sold to anyone.</p>
+                        {% endif %}
+                    {% else %}
+                        {%  if listing.current_winning_bidder == user %}
+                            <p> You have won this auction!</p>
+                        {% elif listing.current_winning_bidder is None %}
+                            <p> Nobody bid on this listing and it has been closed. </p>
+                        {% else %}
+                            <p> An anonymous user has won this auction!</p>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <p> This listing is still accepting bids!</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row listing-comments-section">
+            <h5>Comments Section</h5>
+            <div class="container">
+                <div class="row made-comments">
+
+                    <div class="container">
+
+                        {% for comment in listing.comments.all %}
+                            <div class="row each-comment">
+                                <div class="col">
+                                    <h6><strong>{{ comment.author }}</strong> says:</h6>
+                                    <p> {{ comment.content }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+                {%  if user.is_authenticated %}
+                <div class="row type-your-comment">
+                    <div class="col">
+                        <form action="{% url 'leave comment' listing.pk %}" method="post" id="comment-form">
+                            {% csrf_token %}
+                            <div class="form-group row">
+                                <label for="comment" class="col-12 col-form-label"> Your comment</label>
+                            </div>
+                            <div class="form-group row">
+                                <textarea id="comment" name="comment" placeholder="type your comment here..." class="col-6"></textarea>
+                            </div>
+                            <div class="form-group row">
+                                <input type="submit" value="Submit" class="col-2">
+                            </div>
+
+
+                        </form>
+                    </div>
+
+
+                </div>
+                {% else %}
+                <p>Sign in to submit your own comments!</p>
+                {% endif %}
+            </div>
+
+
+        </div>
+
 
     </div>
 

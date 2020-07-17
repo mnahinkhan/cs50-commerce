@@ -65,18 +65,20 @@ p.listing-current-price-text {
   margin-bottom: 20px;
 }
 
-.listing-image {
-  height: 400px;
-}
-.listing-image img {
-  display: block;
+.listing-image-listing img, .listing-image-index img {
   width: 100%;
   height: auto;
 }
+
 @media (min-width: 992px) {
-  .listing-image img {
+  .listing-image-index img {
     width: 50%;
   }
+}
+
+.listing-image-listing {
+  height: 400px;
+  margin-top: 30px;
 }
 
 .watchlist-section button {
@@ -96,12 +98,13 @@ p.listing-current-price-text {
 }
 
 .listing-page-bid-section {
-  margin-top: 40px;
+  margin-top: 70px;
 }
 .listing-page-bid-section button {
   font-size: 10px;
   background: gray;
   border: rebeccapurple;
+  margin-left: 120px;
 }
 
 .errorlist {
@@ -110,12 +113,39 @@ p.listing-current-price-text {
 }
 
 .listing-page-bid-close-section {
-  margin-top: 30px;
+  margin-top: 50px;
 }
 .listing-page-bid-close-section button {
   background: #406283;
   border-radius: 10px;
   color: white;
+}
+
+.listing-page-end-result {
+  margin-top: 40px;
+}
+
+fieldset.disabled {
+  background: white;
+  opacity: 0.4;
+}
+
+.listing-closed-info {
+  font-size: 12px;
+  color: gray;
+}
+
+#comment-form .form-group {
+  padding: 0;
+  margin: 0 0 10px;
+}
+#comment-form label {
+  padding: 0;
+  margin: 0;
+}
+
+.type-your-comment {
+  margin-top: 50px;
 }
 
 /*# sourceMappingURL=styles.css.map */
