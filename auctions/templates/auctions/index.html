@@ -3,32 +3,37 @@
 {% block body %}
     <h2>{{ title }}</h2>
 
-    <div class="container all-listings">
+
     {% for listing in listings reversed %}
-        <div class="row listing">
-            <div class="col-4 listing-image-index">
-                <a href="{% url 'listing page' listing.pk %}"><img src="{% if listing.image_url %} {{ listing.image_url }} {% else %}
-                https://sjkelectrical.com.my/img/default-image.jpg
-                {% endif %}" alt="listing  image" class="mx-auto d-block"></a>
+        <div class="container all-listings">
+            <div class="row listing">
+                <div class="col-4 listing-image-index">
+                    <a href="{% url 'listing page' listing.pk %}"><img src="{% if listing.image_url %} {{ listing.image_url }} {% else %}
+                    https://sjkelectrical.com.my/img/default-image.jpg
+                    {% endif %}" alt="listing  image" class="mx-auto d-block"></a>
+
+                </div>
+                <div class="col-6">
+                    <div class="row listing-title">
+                        <h4><a href="{% url 'listing page' listing.pk %}">{{ listing.title }}</a><span class="listing-owner"> &nbsp; by {{ listing.owner }}</span></h4>
+                    </div>
+                    <div class="row listing-description">
+                        <p>{{ listing.description }}</p>
+                    </div>
+                    <div class="row listing-starting-price">
+                        <p>Starting price: ${{ listing.starting_bid }}</p>
+                    </div>
+                </div>
+                <div class="col-2 listing-price align-self-center">
+                    <p class="listing-current-price-text">Current price:</p>
+                    <p>${{ listing.current_price }}</p>
+                </div>
 
             </div>
-            <div class="col-6">
-                <div class="row listing-title">
-                    <h4><a href="{% url 'listing page' listing.pk %}">{{ listing.title }}</a><span class="listing-owner"> &nbsp; by {{ listing.owner }}</span></h4>
-                </div>
-                <div class="row listing-description">
-                    <p>{{ listing.description }}</p>
-                </div>
-                <div class="row listing-starting-price">
-                    <p>Starting price: ${{ listing.starting_bid }}</p>
-                </div>
-            </div>
-            <div class="col-2 listing-price align-self-center">
-                <p class="listing-current-price-text">Current price:</p>
-                <p>${{ listing.current_price }}</p>
-            </div>
-
         </div>
+    {% empty %}
+        <br/>
+        <p>Nothing to see here for now :(</p>
     {% endfor %}
-    </div>
+
 {% endblock %}
