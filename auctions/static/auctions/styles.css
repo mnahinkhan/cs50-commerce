@@ -148,4 +148,8 @@ fieldset.disabled {
   margin-top: 50px;
 }
 
+.each-comment p {
+  color: gray;
+}
+
 /*# sourceMappingURL=styles.css.map */
